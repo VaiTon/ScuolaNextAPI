@@ -89,14 +89,17 @@ export class ArgoUser {
   public async get(request: string): Promise<any> {
     if (this.cached.cacheTime !== 0) {
       const cachedRequest = this.cached.data[request];
-      if (cachedRequest.data 
+      if (cachedRequest && cachedRequest.data
         && (cachedRequest.time - Date.now()) > this.cached.cacheTime) {
         return cachedRequest.data;
       }
     }
     const responseData = (await this.curl(request)).data.dati;
-    this.cached.data[request].data = responseData;
-    this.cached.data[request].time = Date.now();
+    const cacheData: { data: string, time: number } = {
+      data: responseData,
+      time: Date.now()
+    };
+    this.cached.data[request] = cacheData;
     return responseData;
   }
 

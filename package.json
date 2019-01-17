@@ -1,6 +1,6 @@
 {
   "name": "@vaiton86/argo-api",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "",
   "main": "./lib/index.js",
   "author": "VaiTon86",
