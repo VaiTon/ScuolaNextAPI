@@ -1,5 +1,5 @@
 {
-  "name": "argo-api",
+  "name": "@vaiton86/argo-api",
   "version": "0.0.1",
   "description": "",
   "main": "./lib/index.js",
