@@ -1,6 +1,0 @@
-{
-    "name": "argo-api/operators",
-    "typings": "./index.d.ts",
-    "main": "./index.js",
-    "sideEffects": false
-  }

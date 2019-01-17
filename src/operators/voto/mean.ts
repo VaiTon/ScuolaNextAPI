@@ -1,4 +1,4 @@
-import IVoto from "../../models/voto";
+import IVoto from "../../api/voto";
 
 export default (array: IVoto[]): number => {
     return array.reduce((accumulator, currentValue) =>

@@ -1,14 +1,12 @@
 import to from 'await-to-js'
 import Axios from 'axios'
+import { IArgomento, IArgoUser, ICompito, IVoto } from './api';
 import {
   ARGO_API_URL,
   ARGO_DEF_HEADERS,
   IM_VOTE,
   NO_VOTE
 } from './constants'
-import ICompito from './models/compito';
-import IArgoUser from './models/user';
-import IVoto from './models/voto';
 
 
 function checkRealMark(voto: any): boolean {
@@ -26,7 +24,7 @@ export class ArgoUser {
   private authenticated = false;
   private cached: {
     cacheTime: number;
-    data: {}
+    data: any
   };
   constructor(codMin: string, username: string, password: string, isToken: boolean = false, cacheTime = 10 * 3600) {
     this.isToken = isToken
@@ -89,7 +87,17 @@ export class ArgoUser {
   }
 
   public async get(request: string): Promise<any> {
-    return (await this.curl(request)).data.dati
+    if (this.cached.cacheTime !== 0) {
+      const cachedRequest = this.cached.data[request];
+      if (cachedRequest.data 
+        && (cachedRequest.time - Date.now()) > this.cached.cacheTime) {
+        return cachedRequest.data;
+      }
+    }
+    const responseData = (await this.curl(request)).data.dati;
+    this.cached.data[request].data = responseData;
+    this.cached.data[request].time = Date.now();
+    return responseData;
   }
 
   public get voti(): Promise<IVoto[]> {
@@ -146,6 +154,9 @@ export class ArgoUser {
   }
   public get token(): string {
     return this.user.accessCode;
+  }
+  public get argomenti(): Promise<IArgomento> {
+    return this.get('argomenti');
   }
   public get username(): string {
     return this.user.username;

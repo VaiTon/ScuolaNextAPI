@@ -1,4 +1,4 @@
-import IVoto from "../../models/voto";
+import IVoto from "../../api/voto";
 
 
 export default (array: IVoto[], materia: string): IVoto[] => {
