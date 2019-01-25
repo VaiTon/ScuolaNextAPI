@@ -9,10 +9,10 @@ import {
 } from './constants'
 
 
-function checkRealMark(voto: any): boolean {
+export function checkRealMark(voto: any): boolean {
   return !NO_VOTE.includes(voto.codVoto)
 }
-function checkImpr(voto: { codVoto: any; }): boolean {
+export function checkImpr(voto: { codVoto: any; }): boolean {
   return !IM_VOTE.includes(voto.codVoto)
 }
 export class ArgoUser {
