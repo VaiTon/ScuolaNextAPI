@@ -1,5 +1,4 @@
-export * from './argouser';
-export * from './operators';
+export * from './api/types';
+export * from './api/operators';
 
-export * from './api';
-export { checkImpr, checkRealMark } from './argouser';
+export { ArgoUser } from './argouser';

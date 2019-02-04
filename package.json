@@ -1,32 +1,27 @@
 {
   "name": "@vaiton86/argo-api",
-  "version": "0.0.3",
-  "description": "",
+  "version": "1.0.1",
+  "description": "An API to interact with Argo ScuolaNext backend.",
   "main": "./lib/index.js",
   "author": "VaiTon86",
   "license": "MIT",
   "dependencies": {
     "await-to-js": "^2.1.1",
     "axios": "^0.16.2",
-    "cpx": "^1.5.0",
-    "typescript": "^3.2.2"
+    "cpx": "^1.5.0"
   },
   "scripts": {
-    "install": "tsc",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
-    "lint": "tslint -p tsconfig.json"
+    "check": "gts check",
+    "clean": "gts clean",
+    "compile": "tsc -p .",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run check"
   },
   "devDependencies": {
-    "eslint": "^5.12.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-config-google": "^0.11.0",
-    "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-node": "^8.0.1",
-    "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0",
-    "prettier": "^1.15.3",
-    "tslint": "^5.12.0",
-    "tslint-config-prettier": "^1.17.0"
+    "gts": "^0.9.0",
+    "tslint": "^5.12.1",
+    "typescript": "^3.3.1"
   }
 }
