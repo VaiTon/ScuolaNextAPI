@@ -1,6 +1,6 @@
 import to from 'await-to-js';
 import Axios from 'axios';
-import { ApiUser, Compito, Voto, Argomento } from './api/types';
+import { ApiUser, Compito, Voto, Argomento, Scheda } from './api/types';
 import {
   ARGO_API_URL,
   ARGO_DEF_HEADERS
@@ -9,15 +9,20 @@ import { checkRealMark } from './api/operators/voto-operators';
 
 export class ArgoUser {
   isToken: boolean;
-  scheda: any;
+  scheda!: Scheda;
+  userType!: string;
   private user: ApiUser;
-  private headers: { [header: string]: string } = {};
+  private headers: { [header: string]: string | number } = {};
   private authenticated = false;
-  private cached: {
-    cacheTime: number;
-    data: any
+  private cache: {
+    maxTime: number;
+    requests: {
+      [request: string]: {
+        data: string,
+        creationTime: number
+      }
+    }
   };
-  userType: any;
   constructor(codMin: string, username: string, password: string, isToken = false, cacheTime = 10 * 3600) {
     this.isToken = isToken;
     this.user = {
@@ -27,9 +32,9 @@ export class ArgoUser {
       username
     };
 
-    this.cached = {
-      cacheTime,
-      data: {}
+    this.cache = {
+      maxTime: cacheTime,
+      requests: {}
     };
   }
 
@@ -37,10 +42,13 @@ export class ArgoUser {
     let err;
     let response;
 
+    // Set headers
     this.headers = {
       ...this.headers,
       'x-cod-min': this.user.codMin
     };
+
+    // Check for token, otherwise get it
     if (!this.isToken) {
       const actualHeaders = {
         'x-pwd': this.user.accessCode,
@@ -53,6 +61,7 @@ export class ArgoUser {
       this.user.accessCode = response.data.token;
     }
 
+    // Create temp header with auth token
     const header = {
       'x-auth-token': this.user.accessCode
     };
@@ -68,30 +77,40 @@ export class ArgoUser {
       'x-prg-scuola': this.scheda.prgScuola
     };
 
+    // Update instance headers
     this.headers = {
       ...this.headers,
       ...header,
       ...newDefHeaders
     };
-    this.authenticated = true;
 
-    return this.authenticated;
+    return (this.authenticated = true);
   }
 
   async get(request: string): Promise<any> {
-    if (this.cached.cacheTime !== 0) {
-      const cachedRequest = this.cached.data[request];
-      if (cachedRequest && cachedRequest.data
-        && (cachedRequest.time - Date.now()) > this.cached.cacheTime) {
-        return cachedRequest.data;
-      }
+
+    // Check if request has been cached before
+    // Check if cache is active
+    if (this.cache.maxTime !== 0) {
+      const cachedRequest = this.cache.requests[request];
+
+      // Check if cached requests exists and if it has been cached not so long ago
+      if (
+        cachedRequest
+        && cachedRequest.data
+        && (cachedRequest.creationTime - Date.now()) < this.cache.maxTime
+      ) { return cachedRequest.data; }
     }
+
+    // Make a new request
     const responseData = (await this.curl(request)).data.dati;
-    const cacheData: { data: string, time: number } = {
+
+    // Cache request result
+    this.cache.requests[request] = {
       data: responseData,
-      time: Date.now()
+      creationTime: Date.now()
     };
-    this.cached.data[request] = cacheData;
+
     return responseData;
   }
 
@@ -106,8 +125,8 @@ export class ArgoUser {
     });
   }
 
-  async getLowestVoto(): Promise<Voto | undefined> {
-    let votoMin;
+  async getLowestVoto(): Promise<Voto | null> {
+    let votoMin = null;
     let minValue = 11;
 
     const voti = await this.voti;
@@ -120,8 +139,8 @@ export class ArgoUser {
     return votoMin;
   }
 
-  async getHighestVoto(): Promise<Voto | undefined> {
-    let votoMax;
+  async getHighestVoto(): Promise<Voto | null> {
+    let votoMax = null;
     let maxValue = -1;
 
     const voti = await this.voti;
@@ -135,23 +154,24 @@ export class ArgoUser {
   }
 
   get materie(): Promise<Set<string>> {
-    const materie = new Set<string>();
-
     return this.voti.then(voti => {
+      const materie = new Set<string>();
+
       voti.forEach(voto => {
         materie.add(voto.desMateria);
       });
+
       return materie;
     });
   }
   get compiti(): Promise<Compito[]> {
     return this.get('compiti');
   }
-  get token(): string {
-    return this.user.accessCode;
-  }
   get argomenti(): Promise<Argomento> {
     return this.get('argomenti');
+  }
+  get token(): string {
+    return this.user.accessCode;
   }
   get username(): string {
     return this.user.username;
