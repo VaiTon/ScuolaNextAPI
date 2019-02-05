@@ -1,6 +1,6 @@
 {
   "name": "@vaiton86/argo-api",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "An API to interact with Argo ScuolaNext backend.",
   "main": "./lib/index.js",
   "author": "VaiTon86",
@@ -17,6 +17,7 @@
     "fix": "gts fix",
     "prepare": "npm run compile",
     "pretest": "npm run compile",
+    "install": "npm run compile",
     "posttest": "npm run check"
   },
   "devDependencies": {
