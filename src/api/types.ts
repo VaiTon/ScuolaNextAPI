@@ -148,5 +148,6 @@ export interface Assenza {
   binUid: string;
   oraAssenza: string;
   registrataDa: string;
+  datGiustificazione?: string;
   codMin: string;
 }
