@@ -1,14 +1,13 @@
 {
   "name": "@vaiton86/argo-api",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "An API to interact with Argo ScuolaNext backend.",
   "main": "./lib/index.js",
   "author": "VaiTon86",
   "license": "MIT",
   "dependencies": {
     "await-to-js": "^2.1.1",
-    "axios": "^0.16.2",
-    "cpx": "^1.5.0"
+    "axios": "^0.16.2"
   },
   "scripts": {
     "check": "gts check",
@@ -23,6 +22,6 @@
   "devDependencies": {
     "gts": "^0.9.0",
     "tslint": "^5.12.1",
-    "typescript": "^3.3.1"
+    "typescript": "^3.3.3"
   }
 }
