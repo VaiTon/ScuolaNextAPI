@@ -1,11 +1,15 @@
-import to from 'await-to-js';
-import Axios from 'axios';
-import { ApiUser, Compito, Voto, Argomento, Scheda } from './api/types';
+import to from "await-to-js";
+import Axios from "axios";
 import {
-  ARGO_API_URL,
-  ARGO_DEF_HEADERS
-} from './constants';
-import { checkRealMark } from './api/operators/voto-operators';
+  ApiUser,
+  Compito,
+  Voto,
+  Argomento,
+  Scheda,
+  Assenza
+} from "./api/types";
+import { ARGO_API_URL, ARGO_DEF_HEADERS } from "./constants";
+import { checkRealMark } from "./api/operators/voto-operators";
 
 export class ArgoUser {
   isToken: boolean;
@@ -18,12 +22,18 @@ export class ArgoUser {
     maxTime: number;
     requests: {
       [request: string]: {
-        data: string,
-        creationTime: number
-      }
-    }
+        data: string;
+        creationTime: number;
+      };
+    };
   };
-  constructor(codMin: string, username: string, password: string, isToken = false, cacheTime = 10 * 3600) {
+  constructor(
+    codMin: string,
+    username: string,
+    password: string,
+    isToken = false,
+    cacheTime = 10 * 3600
+  ) {
     this.isToken = isToken;
     this.user = {
       accessCode: password,
@@ -45,17 +55,19 @@ export class ArgoUser {
     // Set headers
     this.headers = {
       ...this.headers,
-      'x-cod-min': this.user.codMin
+      "x-cod-min": this.user.codMin
     };
 
     // Check for token, otherwise get it
     if (!this.isToken) {
       const actualHeaders = {
-        'x-pwd': this.user.accessCode,
-        'x-user-id': this.user.username
+        "x-pwd": this.user.accessCode,
+        "x-user-id": this.user.username
       };
-      [err, response] = await to(this.curl('login', actualHeaders));
-      if (err || !response) { return false; }
+      [err, response] = await to(this.curl("login", actualHeaders));
+      if (err || !response) {
+        return false;
+      }
 
       this.userType = response.data.tipoUtente;
       this.user.accessCode = response.data.token;
@@ -63,18 +75,20 @@ export class ArgoUser {
 
     // Create temp header with auth token
     const header = {
-      'x-auth-token': this.user.accessCode
+      "x-auth-token": this.user.accessCode
     };
 
-    [err, response] = await to(this.curl('schede', header));
-    if (err || !response) { return false; }
+    [err, response] = await to(this.curl("schede", header));
+    if (err || !response) {
+      return false;
+    }
 
     [this.scheda] = response.data;
 
     const newDefHeaders = {
-      'x-prg-alunno': this.scheda.prgAlunno,
-      'x-prg-scheda': this.scheda.prgScheda,
-      'x-prg-scuola': this.scheda.prgScuola
+      "x-prg-alunno": this.scheda.prgAlunno,
+      "x-prg-scheda": this.scheda.prgScheda,
+      "x-prg-scuola": this.scheda.prgScuola
     };
 
     // Update instance headers
@@ -88,7 +102,6 @@ export class ArgoUser {
   }
 
   async get(request: string): Promise<any> {
-
     // Check if request has been cached before
     // Check if cache is active
     if (this.cache.maxTime !== 0) {
@@ -96,10 +109,12 @@ export class ArgoUser {
 
       // Check if cached requests exists and if it has been cached not so long ago
       if (
-        cachedRequest
-        && cachedRequest.data
-        && (cachedRequest.creationTime - Date.now()) < this.cache.maxTime
-      ) { return cachedRequest.data; }
+        cachedRequest &&
+        cachedRequest.data &&
+        cachedRequest.creationTime - Date.now() < this.cache.maxTime
+      ) {
+        return cachedRequest.data;
+      }
     }
 
     // Make a new request
@@ -115,13 +130,18 @@ export class ArgoUser {
   }
 
   get voti(): Promise<Voto[]> {
-    return this.get('votigiornalieri');
+    return this.get("votigiornalieri");
   }
-
   get votiRaw(): Promise<number[]> {
     return this.voti.then(value => {
-      return value.filter((voto: Voto) => (voto !== null) && checkRealMark(voto))
+      return value
+        .filter((voto: Voto) => voto !== null && checkRealMark(voto))
         .map((voto: Voto) => voto.decValore);
+    });
+  }
+  get votiFiltered(): Promise<Voto[]> {
+    return this.voti.then(voti => {
+      return voti.filter((voto: Voto) => voto !== null && checkRealMark(voto));
     });
   }
 
@@ -131,7 +151,7 @@ export class ArgoUser {
 
     const voti = await this.voti;
     for (const voto of voti) {
-      if (checkRealMark(voto) && (voto.decValore < minValue)) {
+      if (checkRealMark(voto) && voto.decValore < minValue) {
         votoMin = voto;
         minValue = voto.decValore;
       }
@@ -145,7 +165,7 @@ export class ArgoUser {
 
     const voti = await this.voti;
     for (const voto of voti) {
-      if (checkRealMark(voto) && (voto.decValore > maxValue)) {
+      if (checkRealMark(voto) && voto.decValore > maxValue) {
         votoMax = voto;
         maxValue = voto.decValore;
       }
@@ -165,10 +185,13 @@ export class ArgoUser {
     });
   }
   get compiti(): Promise<Compito[]> {
-    return this.get('compiti');
+    return this.get("compiti");
   }
   get argomenti(): Promise<Argomento> {
-    return this.get('argomenti');
+    return this.get("argomenti");
+  }
+  get assenze(): Promise<Assenza> {
+    return this.get("assenze");
   }
   get token(): string {
     return this.user.accessCode;
@@ -180,7 +203,6 @@ export class ArgoUser {
     return this.user.codMin;
   }
 
-
   private async curl(request: string, addedHeaders = {}, params = {}) {
     const fHeaders = {
       ...ARGO_DEF_HEADERS,
@@ -189,13 +211,12 @@ export class ArgoUser {
     };
     const fParams = {
       ...params,
-      _dc: Math.round((+new Date()) * 1000)
+      _dc: Math.round(+new Date() * 1000)
     };
 
-    return Axios.get(ARGO_API_URL + request,
-      {
-        headers: fHeaders,
-        params: fParams
-      });
+    return Axios.get(ARGO_API_URL + request, {
+      headers: fHeaders,
+      params: fParams
+    });
   }
 }
