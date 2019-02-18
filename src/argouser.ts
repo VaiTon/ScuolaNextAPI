@@ -187,10 +187,10 @@ export class ArgoUser {
   get compiti(): Promise<Compito[]> {
     return this.get("compiti");
   }
-  get argomenti(): Promise<Argomento> {
+  get argomenti(): Promise<Argomento[]> {
     return this.get("argomenti");
   }
-  get assenze(): Promise<Assenza> {
+  get assenze(): Promise<Assenza[]> {
     return this.get("assenze");
   }
   get token(): string {
