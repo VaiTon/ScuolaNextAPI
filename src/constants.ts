@@ -8,10 +8,20 @@ export const ARGO_DEF_HEADERS = {
 };
 
 export const NO_VOTE = [
-  'A', 'AA', 'AC', 'R', 'AL',
-  'AM', 'RI', 'SP', 'E', 'I',
-  'M', 'MM', 'N', 'S', 'IM'
+  'A',
+  'AA',
+  'AC',
+  'R',
+  'AL',
+  'AM',
+  'RI',
+  'SP',
+  'E',
+  'I',
+  'M',
+  'MM',
+  'N',
+  'S',
+  'IM'
 ];
-export const IM_VOTE = [
-  'IM', 'N'
-];
+export const IM_VOTE = ['IM', 'N'];

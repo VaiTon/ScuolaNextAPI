@@ -65,7 +65,7 @@ export interface Scheda {
     /** Comune di nascita */
     desComuneNascita: string;
     /** Sesso (M o F) */
-    flgSesso: "M" | "F";
+    flgSesso: 'M' | 'F';
     /** Data di nascita (Anno-Mese-Giorno) */
     datNascita: string;
     /** Indirizzo recapito */
@@ -82,7 +82,7 @@ export interface Scheda {
     desCittadinanza: string;
   };
   /** Codice scuola */
-  codMin: "SS28357";
+  codMin: 'SS28357';
   /** Anno scolastico */
   numAnno: 2018;
   /** Codice alunno */
@@ -90,7 +90,7 @@ export interface Scheda {
   /** Codice classe */
   prgClasse: 1925;
   /** Classe alunno (1,3,5) */
-  desDenominazione: "3";
+  desDenominazione: '3';
   /** Sezione alunno */
   desCorso: string;
   /** Oggetto contenente le variabili corrispondendi ai permessi dell'utente */

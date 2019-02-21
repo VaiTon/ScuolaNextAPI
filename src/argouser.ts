@@ -1,5 +1,5 @@
-import to from "await-to-js";
-import Axios from "axios";
+import to from 'await-to-js';
+import Axios from 'axios';
 import {
   ApiUser,
   Compito,
@@ -7,9 +7,9 @@ import {
   Argomento,
   Scheda,
   Assenza
-} from "./api/types";
-import { ARGO_API_URL, ARGO_DEF_HEADERS } from "./constants";
-import { checkRealMark } from "./api/operators/voto-operators";
+} from './api/types';
+import { ARGO_API_URL, ARGO_DEF_HEADERS } from './constants';
+import { checkRealMark } from './api/operators/voto-operators';
 
 export class ArgoUser {
   isToken: boolean;
@@ -55,16 +55,16 @@ export class ArgoUser {
     // Set headers
     this.headers = {
       ...this.headers,
-      "x-cod-min": this.user.codMin
+      'x-cod-min': this.user.codMin
     };
 
     // Check for token, otherwise get it
     if (!this.isToken) {
       const actualHeaders = {
-        "x-pwd": this.user.accessCode,
-        "x-user-id": this.user.username
+        'x-pwd': this.user.accessCode,
+        'x-user-id': this.user.username
       };
-      [err, response] = await to(this.curl("login", actualHeaders));
+      [err, response] = await to(this.curl('login', actualHeaders));
       if (err || !response) {
         return false;
       }
@@ -75,10 +75,10 @@ export class ArgoUser {
 
     // Create temp header with auth token
     const header = {
-      "x-auth-token": this.user.accessCode
+      'x-auth-token': this.user.accessCode
     };
 
-    [err, response] = await to(this.curl("schede", header));
+    [err, response] = await to(this.curl('schede', header));
     if (err || !response) {
       return false;
     }
@@ -86,9 +86,9 @@ export class ArgoUser {
     [this.scheda] = response.data;
 
     const newDefHeaders = {
-      "x-prg-alunno": this.scheda.prgAlunno,
-      "x-prg-scheda": this.scheda.prgScheda,
-      "x-prg-scuola": this.scheda.prgScuola
+      'x-prg-alunno': this.scheda.prgAlunno,
+      'x-prg-scheda': this.scheda.prgScheda,
+      'x-prg-scuola': this.scheda.prgScuola
     };
 
     // Update instance headers
@@ -130,7 +130,7 @@ export class ArgoUser {
   }
 
   get voti(): Promise<Voto[]> {
-    return this.get("votigiornalieri");
+    return this.get('votigiornalieri');
   }
   get votiRaw(): Promise<number[]> {
     return this.voti.then(value => {
@@ -185,13 +185,13 @@ export class ArgoUser {
     });
   }
   get compiti(): Promise<Compito[]> {
-    return this.get("compiti");
+    return this.get('compiti');
   }
   get argomenti(): Promise<Argomento[]> {
-    return this.get("argomenti");
+    return this.get('argomenti');
   }
   get assenze(): Promise<Assenza[]> {
-    return this.get("assenze");
+    return this.get('assenze');
   }
   get token(): string {
     return this.user.accessCode;
