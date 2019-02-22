@@ -101,7 +101,7 @@ export class ArgoUser {
     return (this.authenticated = true);
   }
 
-  async get(request: string): Promise<any> {
+  async get(request: string) {
     // Check if request has been cached before
     // Check if cache is active
     if (this.cache.maxTime !== 0) {
