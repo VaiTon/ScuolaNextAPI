@@ -9,26 +9,30 @@
     "await-to-js": "^2.1.1",
     "axios": "^0.16.2",
     "package": "^1.0.1",
-    "typescript": "^3.3.3"
-  },
-  "scripts": {
-    "compile": "tsc -p .",
-    "test": "npm run compile",
-    "install": "npm run compile",
-    "format:fix": "pretty-quick --staged",
-    "format:check": "prettier --config ./.prettierrc --list-different \"src/**/*{.ts,.js,.json,.css,.scss}\"",
-    "lint": "tslint --project ."
-  },
-  "devDependencies": {
-    "husky": "^1.3.1",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^1.16.4",
-    "pretty-quick": "^1.10.0",
-    "tslint": "^5.12.1"
+    "typescript": "^3.3.3333"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "run-s format:fix lint"
+      "pre-commit": "run-s format:fix lint test"
     }
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "install": "npm run compile",
+    "format:fix": "pretty-quick --staged",
+    "format:check": "prettier --config ./.prettierrc --list-different \"src/**/*{.ts,.js,.json,.css,.scss}\"",
+    "lint": "tslint --project .",
+    "test": "cross-env JASMINE_CONFIG_PATH=jasmine.json ts-node node_modules/jasmine/bin/jasmine"
+  },
+  "devDependencies": {
+    "@types/jasmine": "^3.3.9",
+    "cross-env": "^5.2.0",
+    "husky": "^1.3.1",
+    "jasmine": "^3.3.1",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.16.4",
+    "pretty-quick": "^1.10.0",
+    "ts-node": "^8.0.2",
+    "tslint": "^5.13.0"
   }
 }

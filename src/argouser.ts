@@ -9,7 +9,7 @@ import {
   Assenza
 } from './api/types';
 import { ARGO_API_URL, ARGO_DEF_HEADERS } from './constants';
-import { checkRealMark } from './api/operators/voto-operators';
+import { checkRealMark } from './operators/voto/voto-operators';
 
 export class ArgoUser {
   isToken: boolean;

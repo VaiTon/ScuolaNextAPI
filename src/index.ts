@@ -1,4 +1,4 @@
 export * from './api/types';
-export * from './api/operators';
+export * from './operators';
 
 export { ArgoUser } from './argouser';
