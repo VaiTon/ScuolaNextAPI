@@ -151,3 +151,7 @@ export interface Assenza {
   datGiustificazione?: string;
   codMin: string;
 }
+export interface Docente {
+  nome: string[];
+  cognome: string;
+}
