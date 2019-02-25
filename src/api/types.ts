@@ -155,3 +155,10 @@ export interface Docente {
   nome: string[];
   cognome: string;
 }
+export interface Ora {
+  codMin: string;
+  giorno: string;
+  lezioni: [{ docente: string; materia: string }];
+  numGiorno: number;
+  numOra: number;
+}

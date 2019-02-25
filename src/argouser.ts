@@ -5,7 +5,8 @@ import {
   Voto,
   Argomento,
   Scheda,
-  Assenza
+  Assenza,
+  Ora
 } from './api/types';
 import { ARGO_API_URL, ARGO_DEF_HEADERS } from './constants';
 import { checkRealMark } from './operators/voto/voto-operators';
@@ -166,7 +167,7 @@ export class ArgoUser {
     return this.get('docenticlasse');
   }
 
-  get orario() {
+  get orario(): Promise<Ora[]> {
     return this.get('orario');
   }
 
