@@ -21,6 +21,7 @@
   "dependencies": {
     "await-to-js": "^2.1.1",
     "axios": "^0.16.2",
+    "package": "^1.0.1",
     "typescript": "^3.3.3333"
   },
   "devDependencies": {
