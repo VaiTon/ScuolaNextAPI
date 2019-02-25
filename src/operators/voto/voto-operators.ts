@@ -42,7 +42,7 @@ export function getDocente(voto: Voto): Docente {
     .substring(profD, voto.docente.length - 1)
     .split(' ')
     .map(str => titleCase(str));
-  const cognome = nomi.pop();
+  const cognome = nomi.shift();
   return { nome: nomi, cognome: cognome ? cognome : '' };
 }
 function titleCase(input: string): string {

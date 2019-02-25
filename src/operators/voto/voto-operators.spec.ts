@@ -11,11 +11,11 @@ import { Voto } from '../../api/types';
 describe('Voto operators', () => {
   it('should return correct docente', () => {
     const fakeVoto = {
-      docente: '(Prof. DUMMY fake BOY)'
+      docente: '(Prof. VENTURA Maria BOY)'
     };
     expect(getDocente(fakeVoto as Voto)).toEqual({
-      nome: ['Dummy', 'Fake'],
-      cognome: 'Boy'
+      nome: ['Maria', 'Boy'],
+      cognome: 'Ventura'
     });
   });
 
