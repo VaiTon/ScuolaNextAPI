@@ -10,14 +10,15 @@ import {
 } from './api/types';
 import { ARGO_API_URL, ARGO_DEF_HEADERS } from './constants';
 import { checkRealMark } from './operators/voto/voto-operators';
+import { TimeoutError } from './errors';
 
 export class ArgoUser {
   isToken: boolean;
   scheda!: Scheda;
   userType!: string;
+  timeOut: number = 2500;
   private user: ApiUser;
   private headers: { [header: string]: string | number } = {};
-  private authenticated = false;
   private cache: {
     maxTime: number;
     requests: {
@@ -47,11 +48,7 @@ export class ArgoUser {
       requests: {}
     };
   }
-
   async authenticate(): Promise<boolean> {
-    let err;
-    let response;
-
     // Set headers
     this.headers = {
       ...this.headers,
@@ -64,10 +61,7 @@ export class ArgoUser {
         'x-pwd': this.user.accessCode,
         'x-user-id': this.user.username
       };
-      [err, response] = await to(this.curl('login', actualHeaders));
-      if (err || !response) {
-        return false;
-      }
+      const response = (await this.curl('login', actualHeaders)) as any;
 
       this.userType = response.data.tipoUtente;
       this.user.accessCode = response.data.token;
@@ -78,12 +72,8 @@ export class ArgoUser {
       'x-auth-token': this.user.accessCode
     };
 
-    [err, response] = await to(this.curl('schede', header));
-    if (err || !response) {
-      return false;
-    }
-
-    [this.scheda] = response.data;
+    const schede = (await this.curl('schede', header)) as any;
+    [this.scheda] = schede.data;
 
     const newDefHeaders = {
       'x-prg-alunno': this.scheda.prgAlunno,
@@ -98,7 +88,7 @@ export class ArgoUser {
       ...newDefHeaders
     };
 
-    return (this.authenticated = true);
+    return true;
   }
 
   async get(request: string) {
@@ -111,14 +101,15 @@ export class ArgoUser {
       if (
         cachedRequest &&
         cachedRequest.data &&
-        cachedRequest.creationTime - Date.now() < this.cache.maxTime
+        Date.now() - cachedRequest.creationTime < this.cache.maxTime
       ) {
         return cachedRequest.data;
       }
     }
 
     // Make a new request
-    const responseData = (await this.curl(request)).data.dati;
+    const response = await this.curl(request);
+    const responseData = (response as any).data.dati;
 
     // Cache request result
     this.cache.requests[request] = {
@@ -216,7 +207,12 @@ export class ArgoUser {
 
     return Axios.get(ARGO_API_URL + request, {
       headers: fHeaders,
-      params: fParams
+      params: fParams,
+      timeout: 2500
+    }).catch(err => {
+      if (Axios.isCancel(err)) {
+        throw new TimeoutError('Request reached max timeout time.');
+      }
     });
   }
 }
