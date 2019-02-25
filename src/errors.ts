@@ -3,3 +3,8 @@ export class TimeoutError extends Error {
     super(message);
   }
 }
+export class AuthError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
+}

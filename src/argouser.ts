@@ -1,4 +1,3 @@
-import to from 'await-to-js';
 import Axios from 'axios';
 import {
   ApiUser,
@@ -10,7 +9,7 @@ import {
 } from './api/types';
 import { ARGO_API_URL, ARGO_DEF_HEADERS } from './constants';
 import { checkRealMark } from './operators/voto/voto-operators';
-import { TimeoutError } from './errors';
+import { TimeoutError, AuthError } from './errors';
 
 export class ArgoUser {
   isToken: boolean;
@@ -48,7 +47,7 @@ export class ArgoUser {
       requests: {}
     };
   }
-  async authenticate(): Promise<boolean> {
+  async authenticate(): Promise<ArgoUser> {
     // Set headers
     this.headers = {
       ...this.headers,
@@ -88,7 +87,7 @@ export class ArgoUser {
       ...newDefHeaders
     };
 
-    return true;
+    return this;
   }
 
   async get(request: string) {
@@ -163,6 +162,13 @@ export class ArgoUser {
     }
     return votoMax;
   }
+  get docenti() {
+    return this.get('docenticlasse');
+  }
+
+  get orario() {
+    return this.get('orario');
+  }
 
   get materie(): Promise<Set<string>> {
     return this.voti.then(voti => {
@@ -211,7 +217,15 @@ export class ArgoUser {
       timeout: 2500
     }).catch(err => {
       if (Axios.isCancel(err)) {
-        throw new TimeoutError('Request reached max timeout time.');
+        throw new TimeoutError('Request reached max timeout time');
+      } else if (
+        err.response &&
+        err.response.status &&
+        err.response.status === 401
+      ) {
+        throw new AuthError('Invalid credentials');
+      } else {
+        throw err;
       }
     });
   }
