@@ -1,6 +1,6 @@
 {
   "name": "@vaiton86/argo-api",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "An API to interact with Argo ScuolaNext backend.",
   "main": "./lib/index.js",
   "author": "VaiTon86",
