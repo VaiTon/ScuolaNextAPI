@@ -137,7 +137,7 @@ export interface Scheda {
 }
 export interface Assenza {
   numOra: number | null;
-  codEvento: string;
+  codEvento: 'I' | 'U' | 'A';
   datAssenza: string;
   prgAlunno: number;
   numAnno: number;
