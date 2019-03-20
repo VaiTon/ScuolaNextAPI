@@ -36,13 +36,18 @@ export function checkRealMark(voto: Voto): boolean {
 export function checkImpr(voto: Voto): boolean {
   return !IM_VOTE.includes(voto.codVoto);
 }
+
 const profD = '(Prof. '.length;
+
 export function getDocente(voto: Voto): Docente {
   const nomi: string[] = voto.docente
     .substring(profD, voto.docente.length - 1)
+    .replace(/ {1,}/g, ' ')
     .split(' ')
     .map(str => titleCase(str));
+
   const cognome = nomi.shift();
+
   return { nome: nomi, cognome: cognome ? cognome : '' };
 }
 function titleCase(input: string): string {
