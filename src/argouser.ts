@@ -72,7 +72,7 @@ export class ArgoUser {
       'x-auth-token': this.user.accessCode
     };
 
-    this.scheda = (await this.curl('schede', header)).data;
+    this.scheda = (await this.curl('schede', header)).data[0];
 
     const newDefHeaders = {
       'x-prg-alunno': this.scheda.prgAlunno,
