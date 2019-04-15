@@ -216,7 +216,7 @@ export class ArgoUser {
       params: fParams,
       timeout: 2500
     }).catch(err => {
-      if (Axios.isCancel(err)) {
+      if (Axios.isCancel(err) || !err.response) {
         throw new TimeoutError('Request reached max timeout time');
       } else if (
         err.response &&
