@@ -7,7 +7,6 @@ export class AuthError extends Error {
 export class TimeoutError extends Error {
   constructor(m: string) {
     super(m);
-    // Set the prototype explicitly.
     Object.setPrototypeOf(this, TimeoutError.prototype);
   }
 }

@@ -4,7 +4,7 @@ import {
   mean,
   filterByDate,
   filterBySubject,
-  checkImpr
+  isImpr
 } from './voto-operators';
 import { Voto } from '../../api/types';
 
@@ -62,8 +62,8 @@ describe('Voto operators', () => {
     ] as Voto[];
     const goodVoto = { codVoto: '9' } as Voto;
 
-    badVoti.forEach(voto => expect(checkImpr(voto)).toBe(false));
-    expect(checkImpr(goodVoto)).toBe(true);
+    badVoti.forEach(imprVoto => expect(isImpr(imprVoto)).toBe(true));
+    expect(isImpr(goodVoto)).toBe(false);
   });
   it('should check if the mark is real correctly', () => {
     // TODO

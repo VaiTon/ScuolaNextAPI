@@ -1,4 +1,4 @@
-import Axios from 'axios';
+import Axios, { AxiosPromise, AxiosResponse } from 'axios';
 import {
   ApiUser,
   Compito,
@@ -6,11 +6,12 @@ import {
   Argomento,
   Scheda,
   Assenza,
-  Ora
+  Ora,
+  Docente
 } from './api/types';
 import { ARGO_API_URL, ARGO_DEF_HEADERS } from './constants';
-import { checkRealMark } from './operators/voto/voto-operators';
 import { TimeoutError, AuthError } from './errors';
+import { isUnreal } from './operators/voto/voto-operators';
 
 export class ArgoUser {
   isToken: boolean;
@@ -61,7 +62,7 @@ export class ArgoUser {
         'x-pwd': this.user.accessCode,
         'x-user-id': this.user.username
       };
-      const response = (await this.curl('login', actualHeaders)) as any;
+      const response = await this.curl('login', actualHeaders);
 
       this.userType = response.data.tipoUtente;
       this.user.accessCode = response.data.token;
@@ -98,9 +99,9 @@ export class ArgoUser {
 
       // Check if cached requests exists and if it has been cached not so long ago
       if (
-        cachedRequest &&
-        cachedRequest.data &&
-        Date.now() - cachedRequest.creationTime < this.cache.maxTime
+        cachedRequest && // It exists
+        cachedRequest.data && // It has been completed
+        Date.now() - cachedRequest.creationTime < this.cache.maxTime // It has been created before max time
       ) {
         return cachedRequest.data;
       }
@@ -108,7 +109,7 @@ export class ArgoUser {
 
     // Make a new request
     const response = await this.curl(request);
-    const responseData = (response as any).data.dati;
+    const responseData = response.data.dati;
 
     // Cache request result
     this.cache.requests[request] = {
@@ -125,13 +126,13 @@ export class ArgoUser {
   get votiRaw(): Promise<number[]> {
     return this.voti.then(value => {
       return value
-        .filter((voto: Voto) => voto !== null && checkRealMark(voto))
+        .filter((voto: Voto) => voto !== null && !isUnreal(voto))
         .map((voto: Voto) => voto.decValore);
     });
   }
   get votiFiltered(): Promise<Voto[]> {
     return this.voti.then(voti => {
-      return voti.filter((voto: Voto) => voto !== null && checkRealMark(voto));
+      return voti.filter((voto: Voto) => voto !== null && !isUnreal(voto));
     });
   }
 
@@ -141,7 +142,7 @@ export class ArgoUser {
 
     const voti = await this.voti;
     for (const voto of voti) {
-      if (checkRealMark(voto) && voto.decValore < minValue) {
+      if (!isUnreal(voto) && voto.decValore < minValue) {
         votoMin = voto;
         minValue = voto.decValore;
       }
@@ -155,14 +156,14 @@ export class ArgoUser {
 
     const voti = await this.voti;
     for (const voto of voti) {
-      if (checkRealMark(voto) && voto.decValore > maxValue) {
+      if (!isUnreal(voto) && voto.decValore > maxValue) {
         votoMax = voto;
         maxValue = voto.decValore;
       }
     }
     return votoMax;
   }
-  get docenti() {
+  get docenti(): Promise<Docente[]> {
     return this.get('docenticlasse');
   }
 
@@ -200,7 +201,11 @@ export class ArgoUser {
     return this.user.codMin;
   }
 
-  private async curl(request: string, addedHeaders = {}, params = {}) {
+  private async curl(
+    request: string,
+    addedHeaders = {},
+    params = {}
+  ): Promise<AxiosResponse> {
     const fHeaders = {
       ...ARGO_DEF_HEADERS,
       ...this.headers,
