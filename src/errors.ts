@@ -10,3 +10,14 @@ export class TimeoutError extends Error {
     Object.setPrototypeOf(this, TimeoutError.prototype);
   }
 }
+export class ServerError extends Error {
+  private _obj: {};
+  constructor(obj: {}) {
+    super();
+    this._obj = obj;
+    Object.setPrototypeOf(this, TimeoutError.prototype);
+  }
+  get obj(): {} {
+    return this._obj;
+  }
+}

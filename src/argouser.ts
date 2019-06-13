@@ -1,4 +1,4 @@
-import Axios, { AxiosPromise, AxiosResponse } from 'axios';
+import Axios, { AxiosPromise, AxiosResponse, AxiosError } from 'axios';
 import {
   ApiUser,
   Compito,
@@ -10,7 +10,7 @@ import {
   Docente
 } from './api/types';
 import { ARGO_API_URL, ARGO_DEF_HEADERS } from './constants';
-import { TimeoutError, AuthError } from './errors';
+import { TimeoutError, AuthError, ServerError } from './errors';
 import { isUnreal } from './operators/voto/voto-operators';
 
 export class ArgoUser {
@@ -220,7 +220,7 @@ export class ArgoUser {
       headers: fHeaders,
       params: fParams,
       timeout: 2500
-    }).catch(err => {
+    }).catch((err: AxiosError) => {
       if (Axios.isCancel(err) || !err.response) {
         throw new TimeoutError('Request reached max timeout time');
       } else if (
@@ -229,6 +229,12 @@ export class ArgoUser {
         err.response.status === 401
       ) {
         throw new AuthError('Invalid credentials');
+      } else if (
+        err.response &&
+        err.response.status &&
+        err.response.status === 401
+      ) {
+        throw new ServerError(err.response.data);
       } else {
         throw err;
       }
