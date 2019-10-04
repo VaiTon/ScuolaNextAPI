@@ -1,6 +1,6 @@
 export const ARGO_API_URL = 'https://www.portaleargo.it/famiglia/api/rest/';
 export const ARGO_API_KEY = 'ax6542sdru3217t4eesd9';
-export const ARGO_API_VERSION = '2.0.12';
+export const ARGO_API_VERSION = '2.1.0';
 export const ARGO_PRODUCER = 'ARGO Software s.r.l. - Ragusa';
 export const ARGO_APP_KEY = 'APF';
 
