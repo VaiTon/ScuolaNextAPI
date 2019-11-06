@@ -20,15 +20,7 @@ export class ArgoUser {
   timeOut: number = 2500;
   private user: ApiUser;
   private headers: { [header: string]: string | number } = {};
-  private cache: {
-    maxTime: number;
-    requests: {
-      [request: string]: {
-        data: string;
-        creationTime: number;
-      };
-    };
-  };
+
   constructor(
     codMin: string,
     username: string,
@@ -42,11 +34,6 @@ export class ArgoUser {
       codMin,
       scheda: {},
       username
-    };
-
-    this.cache = {
-      maxTime: cacheTime,
-      requests: {}
     };
   }
   async authenticate(): Promise<ArgoUser> {
@@ -92,32 +79,8 @@ export class ArgoUser {
   }
 
   async get(request: string) {
-    // Check if request has been cached before
-    // Check if cache is active
-    if (this.cache.maxTime !== 0) {
-      const cachedRequest = this.cache.requests[request];
-
-      // Check if cached requests exists and if it has been cached not so long ago
-      if (
-        cachedRequest && // It exists
-        cachedRequest.data && // It has been completed
-        Date.now() - cachedRequest.creationTime < this.cache.maxTime // It has been created before max time
-      ) {
-        return cachedRequest.data;
-      }
-    }
-
     // Make a new request
-    const response = await this.curl(request);
-    const responseData = response.data.dati;
-
-    // Cache request result
-    this.cache.requests[request] = {
-      data: responseData,
-      creationTime: Date.now()
-    };
-
-    return responseData;
+    return (await this.curl(request)).data.dati;
   }
 
   get voti(): Promise<Voto[]> {
@@ -228,7 +191,7 @@ export class ArgoUser {
         err.response.status &&
         err.response.status === 401
       ) {
-        throw new AuthError('Invalid credentials');
+        throw new AuthError();
       } else if (
         err.response &&
         err.response.status &&
