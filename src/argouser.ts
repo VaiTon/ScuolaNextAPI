@@ -1,4 +1,4 @@
-import Axios, { AxiosPromise, AxiosResponse, AxiosError } from 'axios';
+import Axios, { AxiosResponse, AxiosError } from 'axios';
 import {
   ApiUser,
   Compito,
@@ -11,7 +11,6 @@ import {
 } from './api/types';
 import { ARGO_API_URL, ARGO_DEF_HEADERS } from './constants';
 import { TimeoutError, AuthError, ServerError } from './errors';
-import { isUnreal } from './operators/voto/voto-operators';
 
 export class ArgoUser {
   isToken: boolean;
@@ -83,75 +82,25 @@ export class ArgoUser {
     return (await this.curl(request)).data.dati;
   }
 
-  get voti(): Promise<Voto[]> {
+  async getVoti(): Promise<Voto[]> {
     return this.get('votigiornalieri');
   }
-  get votiRaw(): Promise<number[]> {
-    return this.voti.then(value => {
-      return value
-        .filter((voto: Voto) => voto !== null && !isUnreal(voto))
-        .map((voto: Voto) => voto.decValore);
-    });
-  }
-  get votiFiltered(): Promise<Voto[]> {
-    return this.voti.then(voti => {
-      return voti.filter((voto: Voto) => voto !== null && !isUnreal(voto));
-    });
-  }
 
-  async getLowestVoto(): Promise<Voto | null> {
-    let votoMin = null;
-    let minValue = 11;
-
-    const voti = await this.voti;
-    for (const voto of voti) {
-      if (!isUnreal(voto) && voto.decValore < minValue) {
-        votoMin = voto;
-        minValue = voto.decValore;
-      }
-    }
-    return votoMin;
-  }
-
-  async getHighestVoto(): Promise<Voto | null> {
-    let votoMax = null;
-    let maxValue = -1;
-
-    const voti = await this.voti;
-    for (const voto of voti) {
-      if (!isUnreal(voto) && voto.decValore > maxValue) {
-        votoMax = voto;
-        maxValue = voto.decValore;
-      }
-    }
-    return votoMax;
-  }
-  get docenti(): Promise<Docente[]> {
+  async getDocenti(): Promise<Docente[]> {
     return this.get('docenticlasse');
   }
 
-  get orario(): Promise<Ora[]> {
+  async getOrario(): Promise<Ora[]> {
     return this.get('orario');
   }
 
-  get materie(): Promise<Set<string>> {
-    return this.voti.then(voti => {
-      const materie = new Set<string>();
-
-      voti.forEach(voto => {
-        materie.add(voto.desMateria);
-      });
-
-      return materie;
-    });
-  }
-  get compiti(): Promise<Compito[]> {
+  async getCompiti(): Promise<Compito[]> {
     return this.get('compiti');
   }
-  get argomenti(): Promise<Argomento[]> {
+  async getArgomenti(): Promise<Argomento[]> {
     return this.get('argomenti');
   }
-  get assenze(): Promise<Assenza[]> {
+  async getAssenze(): Promise<Assenza[]> {
     return this.get('assenze');
   }
   get token(): string {
