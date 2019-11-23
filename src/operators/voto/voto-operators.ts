@@ -44,7 +44,7 @@ export function getDocente(voto: Voto): Docente {
 
   return { nome: nomi.join(' '), cognome: cognome ? cognome : '' };
 }
-function titleCase(input: string): string {
+export function titleCase(input: string): string {
   return input.length === 0
     ? ''
     : input.replace(

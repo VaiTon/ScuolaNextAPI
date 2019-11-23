@@ -7,7 +7,8 @@ import {
   Scheda,
   Assenza,
   Ora,
-  Docente
+  Docente,
+  DocenteClasse
 } from './api/types';
 import { ARGO_API_URL, ARGO_DEF_HEADERS } from './constants';
 import { TimeoutError, AuthError, ServerError } from './errors';
@@ -86,7 +87,7 @@ export class ArgoUser {
     return (this.get('votigiornalieri') as any).dati;
   }
 
-  async getDocenti(): Promise<Docente[]> {
+  async getDocenti(): Promise<DocenteClasse[]> {
     return this.get('docenticlasse');
   }
 
