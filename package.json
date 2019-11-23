@@ -1,6 +1,6 @@
 {
   "name": "scuolanextapi",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "An API to interact with Argo ScuolaNext backend.",
   "main": "./lib/index.js",
   "author": "VaiTon86",
