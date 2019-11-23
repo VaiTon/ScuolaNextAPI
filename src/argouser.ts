@@ -84,7 +84,7 @@ export class ArgoUser {
   }
 
   async getVoti(): Promise<Voto[]> {
-    return (this.get('votigiornalieri') as any).dati;
+    return ((await this.get('votigiornalieri')) as any).dati;
   }
 
   async getDocenti(): Promise<DocenteClasse[]> {
@@ -92,7 +92,7 @@ export class ArgoUser {
   }
 
   async getOrario(): Promise<Ora[]> {
-    return (this.get('orario') as any).dati;
+    return ((await this.get('orario')) as any).dati;
   }
 
   async getCompiti(): Promise<Compito[]> {
