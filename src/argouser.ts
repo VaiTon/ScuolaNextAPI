@@ -79,11 +79,11 @@ export class ArgoUser {
 
   async get(request: string) {
     // Make a new request
-    return (await this.curl(request)).data.dati;
+    return (await this.curl(request)).data;
   }
 
   async getVoti(): Promise<Voto[]> {
-    return this.get('votigiornalieri');
+    return (this.get('votigiornalieri') as any).dati;
   }
 
   async getDocenti(): Promise<Docente[]> {
@@ -91,17 +91,17 @@ export class ArgoUser {
   }
 
   async getOrario(): Promise<Ora[]> {
-    return this.get('orario');
+    return (this.get('orario') as any).dati;
   }
 
   async getCompiti(): Promise<Compito[]> {
-    return this.get('compiti');
+    return (this.get('compiti') as any).dati;
   }
   async getArgomenti(): Promise<Argomento[]> {
-    return this.get('argomenti');
+    return (this.get('argomenti') as any).dati;
   }
   async getAssenze(): Promise<Assenza[]> {
-    return this.get('assenze');
+    return (this.get('assenze') as any).dati;
   }
   get token(): string {
     return this.user.accessCode;
@@ -113,7 +113,7 @@ export class ArgoUser {
     return this.user.codMin;
   }
 
-  private async curl(
+  async curl(
     request: string,
     addedHeaders = {},
     params = {}

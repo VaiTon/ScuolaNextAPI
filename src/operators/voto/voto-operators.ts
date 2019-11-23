@@ -42,7 +42,7 @@ export function getDocente(voto: Voto): Docente {
 
   const cognome = nomi.shift();
 
-  return { nome: nomi, cognome: cognome ? cognome : '' };
+  return { nome: nomi.join(' '), cognome: cognome ? cognome : '' };
 }
 function titleCase(input: string): string {
   return input.length === 0

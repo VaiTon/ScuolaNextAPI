@@ -14,7 +14,7 @@ describe('Voto operators', () => {
       docente: '(Prof. VENTURA Maria BOY)'
     };
     expect(getDocente(fakeVoto as Voto)).toEqual({
-      nome: ['Maria', 'Boy'],
+      nome: 'Maria Boy',
       cognome: 'Ventura'
     });
   });

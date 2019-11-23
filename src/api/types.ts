@@ -152,8 +152,17 @@ export interface Assenza {
   codMin: string;
 }
 export interface Docente {
-  nome: string[];
+  email?: string;
+  nome: string;
   cognome: string;
+}
+export interface DocenteClasse {
+  prgClasse: number;
+  prgAnagrafe: number;
+  prgScuola: number;
+  materie: string;
+  docente: Docente;
+  codMin: string;
 }
 export interface Ora {
   codMin: string;
