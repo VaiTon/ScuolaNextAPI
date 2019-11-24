@@ -84,7 +84,7 @@ export class ArgoUser {
   }
 
   async getVoti(): Promise<Voto[]> {
-    return ((await this.get('votigiornalieri')) as any).dati;
+    return (await this.get('votigiornalieri')).dati;
   }
 
   async getDocenti(): Promise<DocenteClasse[]> {
@@ -96,13 +96,13 @@ export class ArgoUser {
   }
 
   async getCompiti(): Promise<Compito[]> {
-    return (this.get('compiti') as any).dati;
+    return (await this.get('compiti')).dati;
   }
   async getArgomenti(): Promise<Argomento[]> {
-    return (this.get('argomenti') as any).dati;
+    return (await this.get('argomenti')).dati;
   }
   async getAssenze(): Promise<Assenza[]> {
-    return (this.get('assenze') as any).dati;
+    return (await this.get('assenze')).dati;
   }
   get token(): string {
     return this.user.accessCode;
@@ -145,7 +145,7 @@ export class ArgoUser {
       } else if (
         err.response &&
         err.response.status &&
-        err.response.status === 401
+        err.response.status === 500
       ) {
         throw new ServerError(err.response.data);
       } else {
