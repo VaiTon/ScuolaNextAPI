@@ -19,7 +19,7 @@
     "test": "cross-env JASMINE_CONFIG_PATH=jasmine.json ts-node node_modules/jasmine/bin/jasmine"
   },
   "dependencies": {
-    "axios": "^0.19.0"
+    "axios": "^0.19.2"
   },
   "devDependencies": {
     "@types/jasmine": "^3.5.10",
