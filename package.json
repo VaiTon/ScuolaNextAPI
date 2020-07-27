@@ -11,7 +11,7 @@
     }
   },
   "scripts": {
-    "compile": "tsc -p .",
+    "compile": "npx tsc -p .",
     "install": "npm run compile",
     "format:fix": "pretty-quick --staged",
     "format:check": "prettier --config ./.prettierrc --list-different \"src/**/*{.ts,.js,.json,.css,.scss}\"",
