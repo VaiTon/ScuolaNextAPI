@@ -19,7 +19,8 @@
     "test": "cross-env JASMINE_CONFIG_PATH=jasmine.json ts-node node_modules/jasmine/bin/jasmine"
   },
   "dependencies": {
-    "axios": "^0.19.2"
+    "axios": "^0.19.2",
+    "typescript": "^3.9.7"
   },
   "devDependencies": {
     "@types/jasmine": "^3.5.11",
@@ -30,7 +31,6 @@
     "prettier": "^1.19.1",
     "pretty-quick": "^1.11.1",
     "ts-node": "^8.10.2",
-    "tslint": "^5.20.1",
-    "typescript": "^3.9.7"
+    "tslint": "^5.20.1"
   }
 }
