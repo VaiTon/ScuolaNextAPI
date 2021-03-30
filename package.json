@@ -11,7 +11,8 @@
     "format:fix": "pretty-quick --staged",
     "format:check": "prettier --config ./.prettierrc --list-different \"src/**/*{.ts,.js,.json,.css,.scss}\"",
     "lint": "tslint --project .",
-    "test": "cross-env JASMINE_CONFIG_PATH=jasmine.json ts-node node_modules/jasmine/bin/jasmine"
+    "test": "cross-env JASMINE_CONFIG_PATH=jasmine.json ts-node node_modules/jasmine/bin/jasmine",
+    "prepare": "husky install"
   },
   "dependencies": {
     "axios": "^0.21.1",
